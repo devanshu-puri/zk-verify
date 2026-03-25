@@ -16,8 +16,12 @@ export default function AdminEntitiesPage() {
     try {
       const formData = new FormData(e.currentTarget);
       const name = formData.get("name") as string;
-      const wallet = formData.get("wallet") as string;
+      const wallet = (formData.get("wallet") as string).trim();
       const type = Number(formData.get("type"));
+
+      if (!ethers.isAddress(wallet)) {
+        throw new Error("Invalid Ethereum wallet address format.");
+      }
 
       // Hash wallet with a salt using ethers to generate entityIdHash
       const entityIdHash = ethers.keccak256(ethers.toUtf8Bytes(wallet + "ZKDrugChain"));

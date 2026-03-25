@@ -5,8 +5,8 @@ const config: HardhatUserConfig = {
   solidity: "0.8.24",
   networks: {
     horizenEON: {
-      url: "https://eon-rpc.horizenlabs.io/ethv1",
-      chainId: 26514,
+      url: "https://rpc.ankr.com/horizen_eon",
+      chainId: 7332,
       accounts: [process.env.DEPLOYER_PRIVATE_KEY!],
     },
     horizenEONTestnet: {

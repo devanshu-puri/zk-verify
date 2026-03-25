@@ -24,12 +24,21 @@ export default function QRScanner() {
           await scannerRef.current.stop().catch(console.error);
         }
 
-        let batchId = decodedText;
-        if (decodedText.includes("/verify/")) {
-          batchId = decodedText.split("/verify/")[1];
+        try {
+          const url = new URL(decodedText);
+          if (url.protocol === "http:" || url.protocol === "https:") {
+            window.location.href = decodedText;
+            return;
+          }
+        } catch (_) {
+          // Not a full URL, fall back to raw handling
         }
-        
-        router.push(`/verify/${batchId}`);
+
+        const rawId = decodedText.includes("/verify/") 
+          ? decodedText.split("/verify/")[1] 
+          : decodedText;
+          
+        router.push(`/verify/${rawId}`);
       },
       () => {}
     ).catch(err => {
