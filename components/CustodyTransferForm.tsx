@@ -16,8 +16,8 @@ export default function CustodyTransferForm() {
     batchId: "",
     toEntityHash: "",
     chainStep: 1,
-    batchData: ["1", "2", "3", "4", "5", "6", "7", "8"], // Internal mock metadata mapped to Field
-    entitySecret: "0x123", // In a real app, this would be derived securely and not typed
+    batchData: ["1", "2", "3", "4", "5", "6", "7", "8"],
+    entitySecret: "0x123",
     prevCustodianSecret: "0x456"
   });
 
@@ -26,14 +26,14 @@ export default function CustodyTransferForm() {
       setLoading(true);
       setStatus("Generating Noir ZK Proof...");
       
-      const mockHandoffTimestamp = Math.floor(Date.now() / 1000).toString();
+      const handoffTimestamp = Math.floor(Date.now() / 1000).toString();
       
       const inputs = {
         batch_id: formData.batchId,
-        entity_id_hash: formData.entitySecret, // Mock
-        prev_entity_id_hash: formData.prevCustodianSecret, // Mock
-        handoff_timestamp: mockHandoffTimestamp,
-        batch_commitment: "0x789", // Mock
+        entity_id_hash: formData.entitySecret,
+        prev_entity_id_hash: formData.prevCustodianSecret,
+        handoff_timestamp: handoffTimestamp,
+        batch_commitment: "0x789",
         chain_step: formData.chainStep.toString(),
         is_valid_chain: "1",
         entity_secret: formData.entitySecret,

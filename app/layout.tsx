@@ -6,7 +6,7 @@ import WalletConnect from "../components/WalletConnect";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ZKDrugChain - Antigravity",
+  title: "ZKDrugChain | Medicine Authenticity",
   description: "Zero-knowledge cryptographic medicine authenticity system.",
 };
 
@@ -40,7 +40,7 @@ export default function RootLayout({
         </main>
         <footer className="border-t border-slate-800 bg-slate-900 py-6 mt-auto w-full">
           <div className="max-w-7xl mx-auto px-4 text-center text-sm text-slate-500">
-            Powered by Horizen EON & zkVerify • Antigravity Platform
+            © 2025 ZKDrugChain • Powered by Ethereum & zkVerify
           </div>
         </footer>
       </body>
