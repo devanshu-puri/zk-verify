@@ -25,10 +25,10 @@ export default function AboutModal() {
         About this Project
       </button>
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-        <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl my-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-slate-800 sticky top-0 bg-slate-900 rounded-t-2xl z-10">
+          <div className="flex items-center justify-between p-6 border-b border-slate-800 shrink-0">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
               <span className="w-6 h-6 rounded bg-emerald-500 text-slate-900 flex items-center justify-center text-xs">ZK</span>
               About ZKDrugChain
@@ -42,7 +42,7 @@ export default function AboutModal() {
           </div>
 
           {/* Content */}
-          <div className="p-6 md:p-8 space-y-10 text-slate-300">
+          <div className="p-6 md:p-8 space-y-10 text-slate-300 overflow-y-auto">
             
             {/* The Problem */}
             <section>
