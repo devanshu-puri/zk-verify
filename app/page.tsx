@@ -7,7 +7,7 @@ export default function LandingPage() {
       <section className="pt-32 pb-24 px-4 text-center w-full max-w-5xl mx-auto">
         <div className="inline-flex items-center justify-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 mb-8 mx-auto">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          Live on Horizen EON Mainnet
+          Live on Ethereum Sepolia Testnet
         </div>
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6">
           Trustless Medicine <br className="hidden md:block" />
@@ -40,8 +40,8 @@ export default function LandingPage() {
             <p className="text-slate-400 leading-relaxed">Offloads expensive ZK proof verification from the EVM layer to zkVerify, dramatically reducing transaction costs for supply chain actors.</p>
           </div>
           <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700">
-            <h3 className="text-xl font-bold text-white mb-3">Horizen EON Settled</h3>
-            <p className="text-slate-400 leading-relaxed">Cryptographic attestations are permanently secured via smart contracts on the EVM-compatible Horizen EON mainnet for final truth.</p>
+            <h3 className="text-xl font-bold text-white mb-3">Ethereum Settled</h3>
+            <p className="text-slate-400 leading-relaxed">Cryptographic attestations are permanently secured via smart contracts on the Ethereum EVM network for final truth.</p>
           </div>
         </div>
       </section>

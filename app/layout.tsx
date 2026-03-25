@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import WalletConnect from "../components/WalletConnect";
+import AboutModal from "../components/AboutModal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
             <nav className="hidden md:flex items-center gap-6">
               <a href="/dashboard" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Dashboard</a>
               <a href="/verify/scan" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">Verify Drug</a>
+              <AboutModal />
             </nav>
             <WalletConnect />
           </div>
