@@ -45,6 +45,6 @@ export const DRUG_REGISTRY_ADDRESS = "${address}";
 }
 
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+  console.error("Deployment failed:", error);
+  process.exit(1);
 });

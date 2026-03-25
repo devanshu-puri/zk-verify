@@ -19,11 +19,10 @@ export const DRUG_REGISTRY_ABI = [
 const getValidRegistryAddress = () => {
   const envAddr = process.env.NEXT_PUBLIC_DRUG_REGISTRY_ADDRESS?.trim();
   const fallback = DRUG_REGISTRY_ADDRESS?.trim();
-  const addr = envAddr || fallback;
+  const addr = envAddr || (fallback !== "<DEPLOY_ADDRESS>" ? fallback : "");
   
-  if (!addr || !ethers.isAddress(addr)) {
-    console.warn("Invalid or missing DRUG_REGISTRY_ADDRESS. Falling back to zero address to prevent ENS resolution errors.");
-    return ethers.ZeroAddress;
+  if (!addr || !ethers.isAddress(addr) || addr === ethers.ZeroAddress) {
+    throw new Error("CRITICAL: Invalid or missing Registry Contract Address. Please deploy your smart contract and set NEXT_PUBLIC_DRUG_REGISTRY_ADDRESS in your .env.local file to a valid '0x...' Ethereum address.");
   }
   return addr;
 };

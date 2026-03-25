@@ -30,9 +30,10 @@ export default function WalletConnect() {
               params: [
                 {
                   chainId: ethers.toBeHex(HORIZEN_EON_CHAIN_ID),
-                  chainName: "Horizen EON",
-                  rpcUrls: [HORIZEN_EON_RPC],
-                  nativeCurrency: { name: "ZEN", symbol: "ZEN", decimals: 18 },
+                  chainName: "Ethereum Sepolia",
+                  rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
+                  nativeCurrency: { name: "SepoliaETH", symbol: "ETH", decimals: 18 },
+                  blockExplorerUrls: ["https://sepolia.etherscan.io"],
                 },
               ],
             });
