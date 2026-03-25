@@ -1,0 +1,7 @@
+[package]
+name = "custody_proof"
+type = "bin"
+authors = ["ZKDrugChain"]
+compiler_version = ">=1.0.0-beta.6"
+
+[dependencies]

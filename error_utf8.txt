@@ -1,0 +1,48 @@
+﻿
+> zkdrugchain-antigravity@1.0.0 build
+> next build
+
+  Γû▓ Next.js 14.2.0
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+node.exe : Failed to 
+compile.
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Failed to com   
+ pile.:String) [],     
+RemoteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+./lib/proofGenerator.ts
+Module not found: 
+Can't resolve '../circu
+its/custody_proof/targe
+t/custody_proof.json'
+
+https://nextjs.org/docs
+/messages/module-not-fo
+und
+
+Import trace for 
+requested module:
+./components/CustodyTra
+nsferForm.tsx
+
+
+> Build failed because 
+of webpack errors
