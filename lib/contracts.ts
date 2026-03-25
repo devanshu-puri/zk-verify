@@ -16,11 +16,23 @@ export const DRUG_REGISTRY_ABI = [
   "event CustodyVerified(bytes32 indexed batchId, bytes32 zkProofLeafDigest, uint8 chainStep)"
 ];
 
+const getValidRegistryAddress = () => {
+  const envAddr = process.env.NEXT_PUBLIC_DRUG_REGISTRY_ADDRESS?.trim();
+  const fallback = DRUG_REGISTRY_ADDRESS?.trim();
+  const addr = envAddr || fallback;
+  
+  if (!addr || !ethers.isAddress(addr)) {
+    console.warn("Invalid or missing DRUG_REGISTRY_ADDRESS. Falling back to zero address to prevent ENS resolution errors.");
+    return ethers.ZeroAddress;
+  }
+  return addr;
+};
+
 export async function getRegistryContract(providerOrSigner: ethers.Provider | ethers.Signer) {
-  return new ethers.Contract(DRUG_REGISTRY_ADDRESS, DRUG_REGISTRY_ABI, providerOrSigner);
+  return new ethers.Contract(getValidRegistryAddress(), DRUG_REGISTRY_ABI, providerOrSigner);
 }
 
 export function getReadOnlyRegistryContract() {
-  const provider = new ethers.JsonRpcProvider(HORIZEN_EON_RPC);
-  return new ethers.Contract(DRUG_REGISTRY_ADDRESS, DRUG_REGISTRY_ABI, provider);
+  const provider = new ethers.JsonRpcProvider(HORIZEN_EON_RPC, undefined, { staticNetwork: true });
+  return new ethers.Contract(getValidRegistryAddress(), DRUG_REGISTRY_ABI, provider);
 }
