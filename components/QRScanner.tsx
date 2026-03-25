@@ -8,6 +8,7 @@ export default function QRScanner() {
   const router = useRouter();
   const [error, setError] = useState("");
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  const scannedRef = useRef(false);
 
   useEffect(() => {
     scannerRef.current = new Html5Qrcode("reader");
@@ -15,30 +16,22 @@ export default function QRScanner() {
     scannerRef.current.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
-      (decodedText) => {
-        // Stop scanning to prevent multiple redirects
-        scannerRef.current?.stop().catch(console.error);
+      async (decodedText) => {
+        if (scannedRef.current) return;
+        scannedRef.current = true;
 
-        // If it's a full URL to our app's verify page
-        if (decodedText.includes("/verify/")) {
-          router.push(decodedText);
-        } else {
-          try {
-            // Or if it's some other URL containing "verify"
-            const url = new URL(decodedText);
-            const pathSegments = url.pathname.split("/");
-            if (pathSegments.includes("verify")) {
-              router.push(decodedText);
-            }
-          } catch {
-            // Raw string might just be the batchId
-            router.push(`/verify/${decodedText}`);
-          }
+        if (scannerRef.current) {
+          await scannerRef.current.stop().catch(console.error);
         }
+
+        let batchId = decodedText;
+        if (decodedText.includes("/verify/")) {
+          batchId = decodedText.split("/verify/")[1];
+        }
+        
+        router.push(`/verify/${batchId}`);
       },
-      (err) => {
-        // Ignored, continuous scanning fails gracefully
-      }
+      () => {}
     ).catch(err => {
       setError("Camera permission denied or not supported.");
     });
