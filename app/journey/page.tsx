@@ -302,23 +302,23 @@ export default function JourneyPage() {
 }
 
 function StageWrapper({ children, progress, index }: { children: React.ReactNode, progress: any, index: number }) {
-  // Each stage is fully visible when progress is within [index - 0.2, index, index + 0.2]
-  // and fades out outside that range.
+  // Each stage is fully visible when progress is within [index - 0.1, index + 0.1]
+  // and fades out sharply outside that range to prevent overlap.
   const opacity = useTransform(
     progress,
-    [index - 0.8, index - 0.2, index, index + 0.2, index + 0.8],
-    [0, 1, 1, 1, 0]
+    [index - 0.4, index - 0.1, index + 0.1, index + 0.4],
+    [0, 1, 1, 0]
   );
   
   const y = useTransform(
     progress,
-    [index - 1, index, index + 1],
+    [index - 0.5, index, index + 0.5],
     [100, 0, -100]
   );
 
   const scale = useTransform(
     progress,
-    [index - 1, index, index + 1],
+    [index - 0.5, index, index + 0.5],
     [0.9, 1, 1.1]
   );
 
