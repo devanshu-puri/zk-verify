@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import WalletConnect from "../components/WalletConnect";
 import AboutModal from "../components/AboutModal";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
