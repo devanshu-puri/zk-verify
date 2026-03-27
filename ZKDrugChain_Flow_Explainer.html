@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZKDrugChain Visual Explainer</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --font-main: system-ui, -apple-system, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-links { display: flex; gap: 1rem; }
+        .nav-links button {
+            background: none; border: none; color: var(--text-muted);
+            cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .nav-links button:hover, .nav-links button.active {
+            color: var(--text-main); background: rgba(255,255,255,0.1);
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 60px;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 3rem; font-weight: 800; margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .section-desc { font-size: 1.2rem; color: var(--text-muted); max-w-2xl; margin-bottom: 3rem; }
+
+        /* Scene Box */
+        .scene {
+            background: var(--bg-panel);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent-blue);
+            color: white; border: none; padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        .btn-green { background: var(--accent-green); }
+        .btn-red { background: var(--accent-red); }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes typeWriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+
+        /* Specific Scenes */
+        /* S1: Problem */
+        .hacker-box {
+            position: relative; width: 300px; height: 300px;
+            border: 2px dashed var(--accent-red); border-radius: 1rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .qr-clone {
+            font-size: 5rem; animation: glitch 0.2s infinite; color: var(--accent-red);
+        }
+        .trust-text {
+            position: absolute; bottom: 20px; color: var(--accent-red); font-weight: 800; font-size: 1.5rem; letter-spacing: 2px;
+        }
+
+        /* S2: Pipeline */
+        .pipeline-track {
+            display: flex; width: 100%; justify-content: space-between; align-items: center; position: relative;
+        }
+        .pipeline-line {
+            position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.1); z-index: 1;
+        }
+        .node {
+            width: 80px; height: 80px; background: var(--bg-dark); border: 2px solid var(--accent-blue);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;
+            z-index: 2; position: relative; cursor: pointer; transition: 0.3s;
+        }
+        .node:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .node-tooltip {
+            position: absolute; top: -80px; background: rgba(0,0,0,0.8); padding: 0.5rem; border-radius: 4px;
+            font-size: 0.8rem; font-family: var(--font-mono); white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s;
+            border: 1px solid var(--accent-blue); color: var(--accent-blue);
+        }
+        .node:hover .node-tooltip { opacity: 1; top: -90px; }
+        .data-packet {
+            position: absolute; width: 12px; height: 12px; background: var(--accent-green);
+            border-radius: 50%; z-index: 3; filter: blur(1px); box-shadow: 0 0 10px var(--accent-green);
+            top: 50%; transform: translateY(-50%); left: 0; transition: left 2s linear;
+        }
+
+        /* Tags */
+        .tag {
+            position: absolute; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;
+            background: rgba(255,255,255,0.1); text-transform: uppercase;
+        }
+        .tag-onchain { top: 20px; left: 20px; color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+        .tag-zk { top: 20px; right: 20px; color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+        /* S4: ZK Layer */
+        .zk-split {
+            display: flex; width: 100%; gap: 2rem; height: 100%; align-items: stretch;
+        }
+        .zk-side {
+            flex: 1; border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; padding: 2rem; position: relative; display: flex; flex-direction: column;
+        }
+        .zk-side.private { border-color: rgba(239, 68, 68, 0.3); background: linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, transparent 100%); }
+        .zk-side.public { border-color: rgba(16, 185, 129, 0.3); background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%); }
+        
+        /* Merkle Tree Demo */
+        .merkle-tree { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 2rem;}
+        .m-row { display: flex; gap: 1rem; }
+        .m-node { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-family: monospace; border: 1px solid #555;}
+        .m-node.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); border-color: #fff; }
+
+        /* Typography */
+        .typewriter {
+            overflow: hidden; white-space: nowrap; border-right: 2px solid white;
+            font-size: 4rem; font-weight: 900; background: linear-gradient(90deg, #fff, #8b5cf6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            width: 0;
+            display: inline-block;
+        }
+        .typewriter.start {
+            animation: typeWriter 3s steps(40, end) forwards, blink 0.75s step-end infinite;
+        }
+        @keyframes blink { from, to { border-color: transparent } 50% { border-color: white; } }
+
+        /* Demo UI Wrapper */
+        .demo-ui {
+            width: 100%; height: 100%; background: #0f172a; border-radius: 0.5rem; overflow: hidden;
+            border: 1px solid #1e293b; display: grid; grid-template-columns: 300px 1fr;
+        }
+        .demo-sidebar { background: #1e293b; padding: 1rem; border-right: 1px solid #334155; }
+        .demo-main { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; overflow-y: auto; }
+        .med-card { background: #0f172a; border: 1px solid #334155; padding: 1rem; border-radius: 0.5rem; margin-bottom: 0.5rem; cursor: pointer; transition: 0.2s; }
+        .med-card:hover { border-color: var(--accent-blue); }
+        .med-card.active { border-color: var(--accent-purple); box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); }
+        
+        .term-log { font-family: var(--font-mono); font-size: 0.85rem; color: #a3b8cc; padding: 0.25rem 0;}
+        .term-log.ok { color: var(--accent-green); }
+        .term-log.err { color: var(--accent-red); }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="font-weight: 900; font-size: 1.25rem; letter-spacing: -0.5px;">🟪 ZK<span style="color:var(--text-muted)">DrugChain</span></div>
+        <div class="nav-links">
+            <button onclick="scrollToSec('sec1')" class="active">Problem</button>
+            <button onclick="scrollToSec('sec2')">Pipeline</button>
+            <button onclick="scrollToSec('sec3')">Hashing</button>
+            <button onclick="scrollToSec('sec4')">ZK Proof</button>
+            <button onclick="scrollToSec('sec5')">Counterfeit</button>
+            <button onclick="scrollToSec('sec6')">Demo</button>
+        </div>
+        <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;" onclick="toggleAutoPlay()">Auto Play ↺</button>
+    </nav>
+
+    <div class="container">
+        
+        <!-- SEC 1: GLOBAL PROBLEM -->
+        <section id="sec1">
+            <div class="animate-up">
+                <h1 class="section-title">The Trust Problem</h1>
+                <p class="section-desc">Databases get hacked. QR codes get cloned. Supply chains are a black box. Traditional verification is flawed because it relies on centralized trust.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1">
+                <div class="hacker-box">
+                    <div class="tag tag-onchain" style="color:var(--accent-red); border-color:var(--accent-red);">Compromised</div>
+                    <div class="qr-clone">📱💾</div>
+                    <div class="trust-text">TRUST ≠ SECURITY</div>
+                </div>
+                <div style="position: absolute; right: 50px; width: 300px; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    $ SELECT * FROM supply_chain;<br>
+                    <span style="color: var(--accent-red)">> DB COMPROMISED</span><br>
+                    $ COPY qr_code.png clone.png<br>
+                    <span style="color: var(--accent-red)">> 1 FILE CLONED</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 2: PIPELINE -->
+        <section id="sec2">
+            <div class="animate-up">
+                <h1 class="section-title">The Trustless Pipeline</h1>
+                <p class="section-desc">A cryptographically bound custody chain. Every transition is proved, verified, and settled on Ethereum.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1">
+                <div class="pipeline-track">
+                    <div class="pipeline-line"></div>
+                    <div class="data-packet" id="packet"></div>
+
+                    <div class="node" style="animation: float 4s ease-in-out infinite;">
+                        🏭
+                        <div class="node-tooltip">
+                            Entity Hash: keccak256(wallet + salt)<br>
+                            0xManu...4f92
+                        </div>
+                    </div>
+                    <div class="node" style="animation: float 4s ease-in-out infinite 0.5s;">
+                        🚚
+                        <div class="node-tooltip">
+                            Entity Hash: keccak256(wallet + salt)<br>
+                            0xDist...2b1a
+                        </div>
+                    </div>
+                    <div class="node" style="animation: float 4s ease-in-out infinite 1s;">
+                        📦
+                        <div class="node-tooltip">
+                            Entity Hash: keccak256(wallet + salt)<br>
+                            0xWhole...88c3
+                        </div>
+                    </div>
+                    <div class="node" style="animation: float 4s ease-in-out infinite 1.5s;">
+                        💊
+                        <div class="node-tooltip">
+                            Entity Hash: keccak256(wallet + salt)<br>
+                            0xPharm...11e9
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 3: HASHING -->
+        <section id="sec3">
+            <div class="animate-up">
+                <h1 class="section-title">Cryptographic Binding</h1>
+                <p class="section-desc">Medicines are never stored as plain text. We bind the item identity to a cryptographic hash at birth.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1" style="flex-direction: column; font-family: var(--font-mono);">
+                <div class="tag tag-onchain">EVM Smart Contract</div>
+                
+                <div style="background: #000; padding: 2rem; border-radius: 1rem; border: 1px solid #333; width: 100%; max-width: 800px;">
+                    <div style="color: var(--accent-purple);">// Inputs</div>
+                    <div style="color: #fff;">drugName = "Amoxicillin"</div>
+                    <div style="color: #fff; margin-bottom: 2rem;">batchNumber = "AMX24-99"</div>
+
+                    <div style="color: var(--accent-purple);">// Hash Generation</div>
+                    <div style="color: var(--accent-blue);" id="hashAnimText">batchId = ethers.keccak256(ethers.toUtf8Bytes(drugName + batchNumber))</div>
+                    
+                    <div style="margin-top: 2rem; text-align: center; border: 1px dashed #333; padding: 1rem; font-size: 1.5rem; word-break: break-all;" id="hashResult">
+                        <span style="color:#555;">0x................................................................</span>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button class="btn btn-green" onclick="runHashAnim()">Generate Hash Block ⛏️</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 4: ZK LAYER -->
+        <section id="sec4">
+            <div class="animate-up">
+                <h1 class="section-title">Zero-Knowledge Custody</h1>
+                <p class="section-desc">Prove a valid custody transition to the network without revealing who you are or what your exact inventory margins are.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1">
+                <div class="tag tag-zk">Noir UltraHonk Circuit</div>
+                <div class="zk-split">
+                    <div class="zk-side private">
+                        <h3 style="color: var(--accent-red); margin-bottom: 1rem;">🔒 PRIVATE INPUTS</h3>
+                        <ul style="color: var(--text-muted); line-height: 2; font-family: var(--font-mono); font-size: 0.9rem; list-style:none;">
+                            <li>$ prev_owner_secret</li>
+                            <li>$ curr_owner_secret</li>
+                            <li>$ transition_salt</li>
+                        </ul>
+                        <div style="margin-top: auto; text-align: center; font-size: 3rem; opacity: 0.2;">🙈</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1rem; width: 200px;">
+                        <button class="btn" style="background: var(--accent-purple);" onclick="runProofAnim()">Generate Proof</button>
+                        <div id="proofLoading" style="font-family: monospace; font-size: 2rem; color: var(--accent-purple);"></div>
+                    </div>
+
+                    <div class="zk-side public">
+                        <h3 style="color: var(--accent-green); margin-bottom: 1rem;">🌍 PUBLIC OUTPUTS</h3>
+                        <ul style="color: var(--text-muted); line-height: 2; font-family: var(--font-mono); font-size: 0.9rem; list-style:none;">
+                            <li>> batch_id_hash</li>
+                            <li>> zkVerify_leaf_digest</li>
+                            <li>> validity_boolean</li>
+                        </ul>
+                        <div class="merkle-tree">
+                            <div class="m-row"><div class="m-node" id="m0">Root</div></div>
+                            <div class="m-row"><div class="m-node" id="m1">H0</div><div class="m-node" id="m2">H1</div></div>
+                            <div class="m-row"><div class="m-node" id="m3">...</div><div class="m-node" id="m4" style="border-color:var(--accent-green); color:var(--accent-green)">Leaf</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 5: COUNTERFEIT -->
+        <section id="sec5">
+            <div class="animate-up">
+                <h1 class="section-title">Counterfeit Injection Fails</h1>
+                <p class="section-desc">If a bad actor attempts to inject fake medicine into the chain, the mathematical proof fails. It's impossible to forge.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1">
+                <div style="display: flex; flex-direction: column; gap: 2rem; width: 100%; max-width: 600px;">
+                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; background: #000; padding: 1rem; border-radius: 0.5rem; border: 1px solid #333;">
+                        <span style="font-family: monospace; color: #888;">Step 1: Unknown Entity Attempts Transfer...</span>
+                        <button class="btn btn-red" onclick="runFakeAnim()">Inject Fake 💉</button>
+                    </div>
+
+                    <div id="fakeTerminal" style="background: #111; padding: 1.5rem; border-radius: 0.5rem; font-family: var(--font-mono); min-height: 150px; border-left: 4px solid var(--accent-red);">
+                        > Waiting for simulation...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEC 6: LIVE DEMO INTERFACE -->
+        <section id="sec6">
+            <div class="animate-up">
+                <h1 class="section-title">Interactive Demo Engine</h1>
+                <p class="section-desc">Simulate the real patient verification flow locally. Click a medicine, run the simulation, and verify.</p>
+            </div>
+            
+            <div class="scene animate-up delay-1" style="padding: 0; min-height: 600px;">
+                <div class="demo-ui">
+                    <!-- Sidebar -->
+                    <div class="demo-sidebar">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: bold; margin-bottom: 1rem; letter-spacing: 1px;">PRELOADED INVENTORY</div>
+                        
+                        <div class="med-card active" onclick="selectDemo(this, 'auth')">
+                            <div style="display: flex; justify-content: space-between;"><strong>Amoxicillin</strong> <span style="color:var(--accent-green)">✅</span></div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Vol: 4 chain steps</div>
+                        </div>
+                        
+                        <div class="med-card" onclick="selectDemo(this, 'pend')">
+                            <div style="display: flex; justify-content: space-between;"><strong>Lisinopril</strong> <span style="color:var(--accent-blue)">⚡</span></div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Vol: In transit</div>
+                        </div>
+
+                        <div class="med-card" onclick="selectDemo(this, 'fake')">
+                            <div style="display: flex; justify-content: space-between;"><strong>Atorvastatin</strong> <span style="color:var(--accent-red)">⚠️</span></div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Vol: Compromised</div>
+                        </div>
+                    </div>
+
+                    <!-- Main -->
+                    <div class="demo-main">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h2 style="margin-bottom: 0.5rem;" id="demoMedName">Amoxicillin 500mg</h2>
+                                <code style="background: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; color: var(--accent-purple);">ID: 0x9f86d081884c7d659a2fe...</code>
+                            </div>
+                            <div style="background: #fff; padding: 0.5rem; border-radius: 8px;">
+                                <!-- Fake QR -->
+                                <svg width="80" height="80" viewBox="0 0 40 40"><path d="M0 0h17v17H0V0zm3 3v11h11V3H3zm17 0h17v17H20V0zm3 3v11h11V3H23zM0 23h17v17H0V23zm3 3v11h11V26H3zm20-3h17v4H23v-4zm0 6h4v11h-4V32zm6 0h11v4H29v-4zm0 6h4v5h-4v-5z" fill="#000"/></svg>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; flex: 1;">
+                            <div style="background: rgba(0,0,0,0.5); border-radius: 0.5rem; padding: 1rem; border: 1px solid #334155; display: flex; flex-direction: column;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;">SIMULATION TRACE</div>
+                                <div id="demoLogs" style="flex: 1; overflow-y: auto;">
+                                    <div class="term-log">> Waiting for simulator start...</div>
+                                </div>
+                                <button class="btn btn-blue" style="margin-top: 1rem; width: 100%;" onclick="runDemoSimulator()">Run Flow Simulation</button>
+                            </div>
+
+                            <div style="background: rgba(0,0,0,0.5); border-radius: 0.5rem; padding: 2rem; border: 1px solid #334155; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                                <div id="verifyStatus" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.2;">🛡️</div>
+                                <h3 id="verifyTitle" style="color: var(--text-muted); margin-bottom: 0.5rem;">PATIENT VERIFICATION</h3>
+                                <p id="verifyDesc" style="font-size: 0.85rem; color: #64748b;">Simulate scanning the QR code to fetch the cryptographic truth.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="min-height: 50vh; text-align: center;" id="sec7">
+            <h1 class="typewriter" id="finalText">No database to hack. No QR to clone. Just math.</h1>
+        </section>
+
+    </div>
+
+    <!-- Logic -->
+    <script>
+        // Navigation / Scroll
+        function scrollToSec(id) {
+            document.getElementById(id).scrollIntoView();
+        }
+
+        const sections = document.querySelectorAll("section");
+        const navBtns = document.querySelectorAll(".nav-links button");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    // Update Nav
+                    navBtns.forEach(b => {
+                        b.classList.remove('active');
+                        if(b.getAttribute('onclick').includes(entry.target.id)) b.classList.add('active');
+                    });
+                    
+                    // Trigger animations
+                    const anims = entry.target.querySelectorAll('.animate-up:not(.animated)');
+                    anims.forEach(el => {
+                        el.style.opacity = '1';
+                        el.classList.add('animated');
+                    });
+
+                    // Final text
+                    if(entry.target.id === 'sec7') {
+                        document.getElementById('finalText').classList.add('start');
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(s => observer.observe(s));
+
+        // Pipeline animation packet
+        setInterval(() => {
+            const p = document.getElementById('packet');
+            p.style.left = '0%';
+            p.style.transition = 'none';
+            setTimeout(() => {
+                p.style.transition = 'left 2s linear';
+                p.style.left = '100%';
+            }, 50);
+        }, 3000);
+
+        // Hashing
+        async function runHashAnim() {
+            const res = document.getElementById('hashResult');
+            res.innerHTML = '<span style="color:#888;">Hashing...</span>';
+            await new Promise(r => setTimeout(r, 600));
+            res.innerHTML = '<span style="color:var(--accent-green); font-weight:bold;">0x8b5c...f6a3</span> <span style="font-size:1rem;">✅</span>';
+        }
+
+        // ZK Proof
+        async function runProofAnim() {
+            const loader = document.getElementById('proofLoading');
+            const nodes = Array.from(document.querySelectorAll('.m-node'));
+            
+            let frames = ['|', '/', '-', '\\'];
+            let i = 0;
+            const t = setInterval(() => { loader.innerText = frames[i++ % frames.length]; }, 50);
+
+            await new Promise(r => setTimeout(r, 1500));
+            clearInterval(t);
+            loader.innerText = '✅';
+
+            // Light up tree
+            nodes.reverse().forEach((n, idx) => {
+                setTimeout(() => n.classList.add('active'), idx * 200);
+            });
+        }
+
+        // Counterfeit
+        async function runFakeAnim() {
+             const term = document.getElementById('fakeTerminal');
+             term.innerHTML = '<div style="color:#aaa">> Submitting Proof to zkVerify...</div>';
+             term.parentElement.style.animation = 'shake 0.5s';
+             
+             await new Promise(r => setTimeout(r, 800));
+             term.innerHTML += '<div style="color:var(--accent-red)">! REJECTED: leaf_digest mismatch</div>';
+             
+             await new Promise(r => setTimeout(r, 800));
+             term.innerHTML += '<div style="color:var(--accent-red)">! REJECTED: Entity 0xBad...NotRegistered</div>';
+             
+             await new Promise(r => setTimeout(r, 800));
+             term.innerHTML += '<div style="color:#fff; font-weight:bold; background:var(--accent-red); padding:4px; display:inline-block; margin-top:8px;">❌ SMART CONTRACT TRANSACTION REVERTED</div>';
+        }
+
+        // Demo UI Map
+        let currentDemo = 'auth';
+        function selectDemo(el, type) {
+            document.querySelectorAll('.med-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            currentDemo = type;
+            
+            const nameMap = {
+                'auth': 'Amoxicillin 500mg',
+                'pend': 'Lisinopril 10mg',
+                'fake': 'Atorvastatin 20mg'
+            };
+            document.getElementById('demoMedName').innerText = nameMap[type];
+            resetDemoUI();
+        }
+
+        function resetDemoUI() {
+            document.getElementById('demoLogs').innerHTML = '<div class="term-log">> Waiting for simulator start...</div>';
+            document.getElementById('verifyStatus').innerHTML = '🛡️';
+            document.getElementById('verifyStatus').style.opacity = '0.2';
+            document.getElementById('verifyStatus').style.animation = 'none';
+            document.getElementById('verifyTitle').innerText = 'PATIENT VERIFICATION';
+            document.getElementById('verifyTitle').style.color = 'var(--text-muted)';
+            document.getElementById('verifyDesc').innerText = 'Simulate scanning the QR code to fetch the cryptographic truth.';
+        }
+
+        async function runDemoSimulator() {
+            const logs = document.getElementById('demoLogs');
+            logs.innerHTML = '';
+            const addLog = (m, cls='') => {
+                logs.innerHTML += `<div class="term-log ${cls}">${m}</div>`;
+                logs.scrollTop = logs.scrollHeight;
+            };
+
+            addLog('> Starting simulation flow...', '');
+            await new Promise(r => setTimeout(r, 500));
+
+            // Run based on type
+            if(currentDemo === 'auth') {
+                for(let i of ['Manufacturer', 'Distributor', 'Wholesaler', 'Pharmacy']) {
+                    addLog(`> Transmitting ${i}...`); await new Promise(r => setTimeout(r, 300));
+                    addLog(`> Generating Noir Proof...`); await new Promise(r => setTimeout(r, 500));
+                    addLog(`> zkVerify: ✅ Valid output`, 'ok'); await new Promise(r => setTimeout(r, 300));
+                }
+                updateDemoVerifyPanel('✅', 'AUTHENTIC MEDICINE', 'var(--accent-green)', 'Cryptographic supply chain fully verified. Safe to consume.');
+            
+            } else if (currentDemo === 'pend') {
+                addLog(`> Transmitting Manufacturer...`); await new Promise(r => setTimeout(r, 300));
+                addLog(`> Generating Noir Proof...`); await new Promise(r => setTimeout(r, 500));
+                addLog(`> zkVerify: ✅ Valid output`, 'ok'); await new Promise(r => setTimeout(r, 300));
+                
+                addLog(`> Transmitting Distributor...`); await new Promise(r => setTimeout(r, 300));
+                addLog(`> Generating Noir Proof...`); await new Promise(r => setTimeout(r, 500));
+                addLog(`> zkVerify: ✅ Valid output`, 'ok'); await new Promise(r => setTimeout(r, 300));
+
+                updateDemoVerifyPanel('⚡', 'CHAIN INCOMPLETE', 'var(--accent-blue)', 'Medicine is still legitimately in transit to pharmacy.');
+            } else if (currentDemo === 'fake') {
+                addLog(`> Transmitting Manufacturer...`); await new Promise(r => setTimeout(r, 300));
+                addLog(`> Generating Noir Proof...`); await new Promise(r => setTimeout(r, 500));
+                addLog(`> zkVerify: ❌ REJECTED_INVALID_PATH`, 'err'); await new Promise(r => setTimeout(r, 300));
+                updateDemoVerifyPanel('❌', 'COUNTERFEIT DETECTED', 'var(--accent-red)', 'Invalid proof signature detected. Supply chain compromised.');
+            }
+        }
+
+        function updateDemoVerifyPanel(icon, title, color, desc) {
+            const elStatus = document.getElementById('verifyStatus');
+            const elTitle = document.getElementById('verifyTitle');
+            
+            elStatus.innerHTML = icon;
+            elStatus.style.opacity = '1';
+            if(title === 'AUTHENTIC MEDICINE') elStatus.style.animation = 'pulse 2s infinite';
+            if(title === 'COUNTERFEIT DETECTED') elStatus.style.animation = 'shake 0.5s';
+
+            elTitle.innerText = title;
+            elTitle.style.color = color;
+            document.getElementById('verifyDesc').innerText = desc;
+        }
+
+        // AutoPlay Mode
+        let autoPlayInterval;
+        function toggleAutoPlay() {
+            if(autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                alert('Auto Play Disabled');
+            } else {
+                let sIdx = 0;
+                const secs = ['sec1', 'sec2', 'sec3', 'sec4', 'sec5', 'sec6', 'sec7'];
+                autoPlayInterval = setInterval(() => {
+                    scrollToSec(secs[sIdx]);
+                    
+                    // Trigger inner anims
+                    if(secs[sIdx] === 'sec3') setTimeout(runHashAnim, 1000);
+                    if(secs[sIdx] === 'sec4') setTimeout(runProofAnim, 1000);
+                    if(secs[sIdx] === 'sec5') setTimeout(runFakeAnim, 1000);
+                    if(secs[sIdx] === 'sec6') setTimeout(runDemoSimulator, 1000);
+
+                    sIdx = (sIdx + 1) % secs.length;
+                    if(sIdx===0) {clearInterval(autoPlayInterval); autoPlayInterval=null;}
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
