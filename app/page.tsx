@@ -22,6 +22,9 @@ export default function LandingPage() {
           <Link href="/dashboard" className="px-8 py-3.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]">
             Enter App
           </Link>
+          <Link href="/demo" className="px-8 py-3.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-bold transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+            🧪 Launch Demo
+          </Link>
           <Link href="/verify/scan" className="px-8 py-3.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium border border-slate-700 transition-all flex items-center gap-2">
             Patient Scan QR →
           </Link>

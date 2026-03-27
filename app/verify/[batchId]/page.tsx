@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getReadOnlyRegistryContract } from "../../../lib/contracts";
 import CustodyTimeline from "../../../components/CustodyTimeline";
 import BatchCard from "../../../components/BatchCard";
+import DemoVerify from "../../../components/DemoVerify";
+import { DEMO_MODE, demoMedicines } from "../../../lib/demoData";
 import Link from "next/link";
 import { ShieldCheck, ShieldAlert, ArrowLeft } from "lucide-react";
 
@@ -11,8 +13,23 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState("");
+  
+  // Demo Mode State
+  const [isDemo, setIsDemo] = useState(false);
+  const [demoBatch, setDemoBatch] = useState<any>(null);
 
   useEffect(() => {
+    // Check if DEMO_MODE intercepts
+    if (DEMO_MODE) {
+      const demoMatch = demoMedicines.find(m => m.id === params.batchId);
+      if (demoMatch || params.batchId !== "scan") {
+         setIsDemo(true);
+         setDemoBatch(demoMatch || null);
+         setLoading(false);
+         return;
+      }
+    }
+
     const fetchVerification = async () => {
       try {
         const contract = getReadOnlyRegistryContract();
@@ -48,6 +65,17 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
       setLoading(false);
     }
   }, [params.batchId]);
+
+  if (isDemo) {
+      return (
+        <div className="w-full max-w-3xl mx-auto py-12 px-4">
+          <Link href="/demo" className="text-slate-400 hover:text-white flex items-center gap-2 mb-8 inline-flex transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Back to Demo
+          </Link>
+          <DemoVerify batch={demoBatch} onReset={() => window.location.href = '/demo'} />
+        </div>
+      );
+  }
 
   if (loading) return <div className="py-20 text-center text-slate-400">Verifying cryptographic proofs...</div>;
   if (error) return <div className="py-20 text-center text-red-500 font-medium">{error}</div>;
