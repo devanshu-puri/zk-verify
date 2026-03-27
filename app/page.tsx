@@ -1,11 +1,8 @@
-import Link from "next/link";
+"use client";
 
-export default function LandingPage() {
-  return (
-    <div className="w-full">
-      {/* Hero */}
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Shield, Fingerprint, Activity, Network } from "lucide-react";
+import { Shield, Fingerprint, Network } from "lucide-react";
 
 export default function Home() {
   return (
