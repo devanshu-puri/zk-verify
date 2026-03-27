@@ -36,7 +36,7 @@ export default function CustodyTransferForm() {
   });
 
   // Derived values
-  const chainStep = useMemo(() => {
+  const derivedChainStep = useMemo(() => {
     switch (formData.recipientRole) {
       case "Distributor": return 1;
       case "Wholesaler": return 2;
@@ -49,7 +49,11 @@ export default function CustodyTransferForm() {
 
   const generatedEntityHash = useMemo(() => {
     if (!isValidWallet) return "";
-    return ethers.keccak256(ethers.toUtf8Bytes(formData.recipientWallet.trim() + "ZKDrugChain"));
+    try {
+      return ethers.keccak256(ethers.toUtf8Bytes(formData.recipientWallet.trim() + "ZKDrugChain"));
+    } catch (e) {
+      return "";
+    }
   }, [formData.recipientWallet, isValidWallet]);
 
   const handleCopy = (text: string) => {
@@ -67,6 +71,10 @@ export default function CustodyTransferForm() {
       setStatus("Error: Please select a recipient role.");
       return;
     }
+    if (!formData.batchId) {
+      setStatus("Error: Please enter a Batch ID.");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -74,13 +82,14 @@ export default function CustodyTransferForm() {
       
       const handoffTimestamp = Math.floor(Date.now() / 1000).toString();
       
+      // The ZK circuit requires these specific keys
       const inputs = {
         batch_id: formData.batchId,
         entity_id_hash: generatedEntityHash,
         prev_entity_id_hash: formData.prevCustodianSecret,
         handoff_timestamp: handoffTimestamp,
         batch_commitment: "0x789",
-        chain_step: chainStep.toString(),
+        chain_step: derivedChainStep.toString(),
         is_valid_chain: "1",
         entity_secret: formData.entitySecret,
         batch_data: formData.batchData,
@@ -117,7 +126,7 @@ export default function CustodyTransferForm() {
         generatedEntityHash,
         zkResult?.leafDigest,
         "0x0000000000000000000000000000000000000000000000000000000000000789", // Mock batchCommitment bytes32
-        chainStep,
+        derivedChainStep,
         zkResult?.aggregationId,
         [], // Empty merkle path for mock/demo
         []  // Empty leaf side mapping
@@ -233,7 +242,7 @@ export default function CustodyTransferForm() {
                   </div>
                   <div className="flex flex-col items-center px-4">
                     <ArrowRight className="text-emerald-500" />
-                    <span className="text-[8px] font-bold text-emerald-500 py-0.5 px-2 bg-emerald-500/10 rounded-full mt-1">STEP {chainStep}</span>
+                    <span className="text-[8px] font-bold text-emerald-500 py-0.5 px-2 bg-emerald-500/10 rounded-full mt-1">STEP {derivedChainStep}</span>
                   </div>
                   <div className="text-center flex-1">
                     <p className="text-[10px] uppercase tracking-tighter text-slate-500 font-bold mb-1">Next Recipient</p>
