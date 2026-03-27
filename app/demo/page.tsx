@@ -4,7 +4,7 @@ import { useState } from "react";
 import { demoMedicines, DemoBatch } from "@/lib/demoData";
 import DemoSimulator from "@/components/DemoSimulator";
 import DemoQR from "@/components/DemoQR";
-import { ShieldAlert, CheckCircle2, FlaskConical, Stethoscope, PackageSearch, Activity } from "lucide-react";
+import { ShieldAlert, CheckCircle2, FlaskConical, Stethoscope, PackageSearch, Activity, Fingerprint } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function DemoPage() {
