@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { getRegistryContract } from "../lib/contracts";
 
 export default function BatchRegistrationForm() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [generatedBatchId, setGeneratedBatchId] = useState("");
+
+  useEffect(() => {
+    // Auto-generate a unique bytes32 ID (64 hex characters + 0x)
+    const randomId = ethers.hexlify(ethers.randomBytes(32));
+    setGeneratedBatchId(randomId);
+  }, []);
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,7 +22,7 @@ export default function BatchRegistrationForm() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      const batchId = formData.get("batchId") as string;
+      const batchId = generatedBatchId;
       const drugName = formData.get("drugName") as string;
       const batchNumber = formData.get("batchNumber") as string;
       const expiry = formData.get("expiryDate") as string;
@@ -47,16 +54,21 @@ export default function BatchRegistrationForm() {
       
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Batch ID (bytes32)</label>
-          <input required name="batchId" placeholder="0x..." className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Unique Drug ID (Auto-generated)</label>
+          <input 
+            readOnly 
+            name="batchId" 
+            value={generatedBatchId} 
+            className="w-full px-4 py-2 bg-slate-900/50 border border-slate-700/50 rounded-lg text-slate-400 font-mono text-xs cursor-not-allowed" 
+          />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Drug Name</label>
-          <input required name="drugName" className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Drug Name (e.g., Paracetamol, Insulin)</label>
+          <input required name="drugName" placeholder="Enter drug name" className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Batch Number</label>
-          <input required name="batchNumber" className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white" />
+          <label className="block text-sm font-medium text-slate-300 mb-1">Batch Number (e.g., BATCH-2024-001)</label>
+          <input required name="batchNumber" placeholder="BATCH-YYYY-NNN" className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white" />
         </div>
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1">Expiry Date</label>
