@@ -10,6 +10,20 @@ export async function generateCustodyProof(inputs: any) {
   // @ts-ignore
   const noir = new Noir(circuit);
 
+  // Diagnostic logging
+  console.log("Proof Generator Inputs:", {
+    batch_id: inputs.batch_id,
+    entity_id_hash: inputs.entity_id_hash,
+    prev_entity_id_hash: inputs.prev_entity_id_hash,
+    handoff_timestamp: inputs.handoff_timestamp,
+    batch_commitment: inputs.batch_commitment,
+    chain_step: inputs.chain_step,
+    is_valid_chain: inputs.is_valid_chain,
+    entity_secret: inputs.entity_secret,
+    batch_data: inputs.batch_data,
+    prev_custodian_secret: inputs.prev_custodian_secret
+  });
+
   // Note: in browser environment, @noir-lang handles WASM init automatically
   const witness = await noir.execute(inputs);
   

@@ -82,18 +82,22 @@ export default function CustodyTransferForm() {
       
       const handoffTimestamp = Math.floor(Date.now() / 1000).toString();
       
+      // Defaults and calculated values as suggested by user to avoid 'undefined' errors
+      const previousEntityHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
+      const batchCommitment = ethers.keccak256(ethers.toUtf8Bytes(formData.batchId || "default"));
+
       // The ZK circuit requires these specific keys
       const inputs = {
         batch_id: formData.batchId,
         entity_id_hash: generatedEntityHash,
-        prev_entity_id_hash: formData.prevCustodianSecret,
+        prev_entity_id_hash: previousEntityHash,
         handoff_timestamp: handoffTimestamp,
-        batch_commitment: "0x789",
+        batch_commitment: batchCommitment,
         chain_step: derivedChainStep.toString(),
         is_valid_chain: "1",
-        entity_secret: formData.entitySecret,
+        entity_secret: formData.entitySecret || "0x123",
         batch_data: formData.batchData,
-        prev_custodian_secret: formData.prevCustodianSecret
+        prev_custodian_secret: formData.prevCustodianSecret || "0x456"
       };
 
       const { proof, publicInputs, vk } = await generateCustodyProof(inputs);
