@@ -31,7 +31,9 @@ export default function JourneyPage() {
       interval = setInterval(() => {
         const totalHeight = document.body.scrollHeight - window.innerHeight;
         const currentScroll = window.scrollY;
-        const stageHeight = totalHeight / 9;
+        
+        // 10 sections = 10% progress per slide
+        const stageHeight = totalHeight / 10;
         const currentStage = Math.round(currentScroll / stageHeight);
         
         let nextStage = currentStage + 1;
