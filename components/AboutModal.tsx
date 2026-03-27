@@ -1,20 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 export default function AboutModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 font-medium text-sm transition-colors border border-emerald-500/20"
-      >
-        About this Project
-      </button>
-    );
-  }
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -25,8 +20,9 @@ export default function AboutModal() {
         About this Project
       </button>
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-        <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
+      {isOpen && mounted && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-hidden">
+          <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-800 shrink-0">
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -182,8 +178,10 @@ export default function AboutModal() {
             </section>
             
           </div>
-        </div>
-      </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
 }

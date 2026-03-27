@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden">
       <body className={`${inter.variable} ${sora.variable} ${jetbrains.variable} font-sans bg-background text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-medical-green selection:text-black`}>
         
         {/* Global ZK Field Background */}
