@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { 
   Database, Fingerprint, Link as LinkIcon, Shield,
   Network, AlertTriangle, QrCode, Smartphone,
-  CheckCircle2
+  CheckCircle2, Play, Pause
 } from "lucide-react";
 import Link from "next/link";
 
 export default function JourneyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -23,9 +24,45 @@ export default function JourneyPage() {
     [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   );
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isAutoPlaying) {
+      interval = setInterval(() => {
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+        const currentScroll = window.scrollY;
+        const stageHeight = totalHeight / 9;
+        const currentStage = Math.round(currentScroll / stageHeight);
+        
+        let nextStage = currentStage + 1;
+        if (nextStage > 9) nextStage = 0; // loop back to start
+
+        window.scrollTo({
+          top: nextStage * stageHeight,
+          behavior: 'smooth'
+        });
+      }, 5000); // 5 seconds per slide
+    }
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
   
   return (
     <div ref={containerRef} className="relative w-full h-[1000vh] bg-[#0a0f1f] selection:bg-[#00ff88] selection:text-black">
+      
+      {/* AutoPlay Control */}
+      <div className="fixed top-24 left-6 z-50 pointer-events-auto">
+        <button 
+          onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all border ${
+            isAutoPlaying 
+              ? 'bg-[#00ff88]/20 text-[#00ff88] border-[#00ff88]/50 shadow-[0_0_15px_rgba(0,255,136,0.3)]' 
+              : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:text-white'
+          }`}
+        >
+          {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          {isAutoPlaying ? "AutoPlaying (5s delay)" : "Start AutoPlay"}
+        </button>
+      </div>
       
       {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
