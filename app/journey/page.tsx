@@ -44,15 +44,7 @@ export default function JourneyPage() {
         />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full p-6 z-50 flex items-center justify-between pointer-events-auto">
-        <Link href="/" className="text-white font-bold text-xl tracking-tighter flex items-center gap-2 hover:text-[#00ff88] transition-colors">
-          <span className="text-[#a855f7]">ZK</span>DrugChain
-        </Link>
-        <div className="text-[#94a3b8] font-mono text-sm border border-white/10 px-4 py-2 rounded-full bg-black/50 backdrop-blur">
-          Scroll to explore ↓
-        </div>
-      </nav>
+
 
       {/* Cinematic Stages container */}
       <div className="fixed inset-0 flex items-center justify-center z-10 pointer-events-none">
